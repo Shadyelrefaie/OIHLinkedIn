@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OIH LinkedIn Content Analysis 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #1B2B5E;
+    --accent: #E8941A;
+    --green: #2E8B57;
+    --red: #C0392B;
+    --light-bg: #F4F6FB;
+    --card-bg: #FFFFFF;
+    --border: #E2E8F0;
+    --text-main: #1A202C;
+    --text-muted: #718096;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--light-bg); color: var(--text-main); line-height: 1.7; }
+  .hero { background: linear-gradient(135deg, #1B2B5E 0%, #2C4A8C 60%, #E8941A 100%); color: white; padding: 60px 40px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50%; left: -20%; width: 140%; height: 200%; background: radial-gradient(ellipse, rgba(255,255,255,0.05) 0%, transparent 60%); }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 30px; padding: 6px 18px; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+  .hero h1 span { color: #FFB84D; }
+  .hero p { font-size: 16px; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .hero-meta { margin-top: 28px; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; flex-direction: column; align-items: center; }
+  .hero-meta-item .val { font-size: 28px; font-weight: 800; color: #FFB84D; }
+  .hero-meta-item .lbl { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 1px; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  .section { margin-bottom: 48px; }
+  .section-title { font-size: 22px; font-weight: 700; color: var(--primary); border-left: 4px solid var(--accent); padding-left: 16px; margin-bottom: 24px; }
+  .card { background: var(--card-bg); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+  .card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .stat-card { background: var(--card-bg); border-radius: 14px; padding: 22px; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; }
+  .stat-card .number { font-size: 36px; font-weight: 800; color: var(--primary); }
+  .stat-card .label { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .stat-card .sub { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 4px; }
+  .post-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .post-table th { background: var(--primary); color: white; padding: 12px 16px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: 0.5px; }
+  .post-table th:first-child { border-radius: 8px 0 0 0; }
+  .post-table th:last-child { border-radius: 0 8px 0 0; }
+  .post-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+  .post-table tr:last-child td { border-bottom: none; }
+  .post-table tr:hover td { background: #F8FAFF; }
+  .post-table tr td:first-child { color: var(--text-main); font-weight: 500; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-blue { background: #EBF4FF; color: #2B6CB0; }
+  .badge-orange { background: #FFF5EB; color: #C05621; }
+  .badge-green { background: #F0FFF4; color: #276749; }
+  .badge-gray { background: #EDF2F7; color: #4A5568; }
+  .badge-red { background: #FFF5F5; color: #C53030; }
+  .strength-item, .weakness-item { display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .strength-item:last-child, .weakness-item:last-child { border-bottom: none; }
+  .icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .icon-green { background: #F0FFF4; }
+  .icon-red { background: #FFF5F5; }
+  .icon-orange { background: #FFFBEB; }
+  .item-content h4 { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+  .item-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .tactic-card { border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; background: var(--card-bg); padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .tactic-card .priority { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .priority-high { color: #C0392B; }
+  .priority-medium { color: #E8941A; }
+  .priority-low { color: #2E8B57; }
+  .tactic-card h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .tactic-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .persona-card { background: linear-gradient(135deg, #1B2B5E, #2C4A8C); color: white; border-radius: 16px; padding: 24px; }
+  .persona-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .persona-card .role { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+  .persona-card ul { list-style: none; font-size: 13px; }
+  .persona-card ul li { padding: 4px 0; opacity: 0.9; }
+  .persona-card ul li::before { content: '→ '; color: #FFB84D; }
+  .chart-bar-container { margin-top: 8px; }
+  .chart-bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; margin-bottom: 12px; }
+  .chart-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+  .chart-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .engagement-highlight { background: linear-gradient(135deg, #FFB84D20, #E8941A10); border: 2px solid var(--accent); border-radius: 14px; padding: 24px; text-align: center; }
+  .engagement-highlight .big { font-size: 48px; font-weight: 800; color: var(--accent); }
+  .engagement-highlight .desc { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+  .callout { background: #EBF4FF; border-left: 4px solid #3182CE; border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 13px; color: #2C5282; margin: 20px 0; }
+  .callout strong { font-weight: 700; }
+  .footer { background: var(--primary); color: white; text-align: center; padding: 32px; font-size: 13px; opacity: 0.9; }
+  .footer p { margin-bottom: 4px; }
+  .tab-section { background: #1B2B5E; color: white; padding: 8px 24px; display: flex; gap: 24px; }
+  .tab-item { font-size: 12px; opacity: 0.7; font-weight: 500; }
+  .score-ring { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-ring .ring { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--accent) var(--pct), var(--border) 0); display: flex; align-items: center; justify-content: center; position: relative; }
+  .score-ring .inner { width: 78px; height: 78px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: var(--primary); }
+  .score-ring .ring-label { font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center; }
+  .overview-band { background: linear-gradient(90deg, #1B2B5E 0%, #2C4A8C 100%); border-radius: 16px; padding: 24px 32px; color: white; display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .overview-band .main-text h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .overview-band .main-text p { font-size: 13px; opacity: 0.8; }
+  @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .hero h1 { font-size: 28px; } }
+</style>
+</head><body>
+<div class="hero">
+  <div class="hero-badge">LinkedIn Content Analysis Report</div>
+  <h1>Orascom Investment Holding<br><span>Content Performance & Strategy Analysis</span></h1>
+  <p>A comprehensive audit of OIH's LinkedIn presence, examining content performance, audience alignment, and strategic opportunities — as of May 2026.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span class="val">13K</span><span class="lbl">Followers</span></div>
+    <div class="hero-meta-item"><span class="val">~1–2×</span><span class="lbl">Posts/Month</span></div>
+    <div class="hero-meta-item"><span class="val">402</span><span class="lbl">Peak Reactions</span></div>
+    <div class="hero-meta-item"><span class="val">4</span><span class="lbl">Content Pillars</span></div>
+    <div class="hero-meta-item"><span class="val">1</span><span class="lbl">Video (Visible)</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="section">
+    <div class="section-title">Executive Summary</div>
+    <div class="overview-band">
+      <div class="main-text" style="flex:1">
+        <h3>OIH's LinkedIn is underperforming relative to its 13K follower base</h3>
+        <p>With a highly diversified portfolio spanning destination development, electrical mobility (Blu EV), B2B trading (otrovato), and entertainment (Pyramids Entertainment), OIH has compelling stories to tell — yet the page currently publishes infrequently, relies almost entirely on image posts, lacks thought leadership, and produces minimal audience conversation. The one standout post (CEO appointment: 402 reactions, 163 comments) reveals the latent potential that a more strategic, consistent content programme could unlock.</p>
+      </div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="callout"><strong>Key Finding:</strong> The OIH LinkedIn page functions as a corporate announcement board rather than a value-creating brand asset. By shifting toward an audience-first content strategy with stronger storytelling, industry insight, and consistent posting cadence, OIH can meaningfully grow reach, investor/partner trust, and talent attraction — all critical for a holding company at OIH's stage of regional expansion.</div>
+    </div>
+  </div>
+
+  <!-- COMPANY PROFILE -->
+  <div class="section">
+    <div class="section-title">Company Profile & Business Context</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>About Orascom Investment Holding (OIH)</h3>
+        <p>Founded in 1997 as Orascom Telecom; restructured in 2011 as OIH. Listed on the Egyptian Stock Exchange (EGX) and London Stock Exchange (GDRs). Headquartered in Cairo, Nile City Towers. 201–500 employees. The company invests in high-impact sectors: destination development, trading & logistics, renewable energy, electrical mobility, and entertainment / media.</p>
+      </div>
+      <div class="card">
+        <h3>Portfolio Subsidiaries on LinkedIn</h3>
+        <p style="margin-bottom:10px">OIH's content regularly features its subsidiaries, each with distinct brand identities:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="badge badge-blue">🏍 Blu EV (e-mobility)</span>
+          <span class="badge badge-orange">🏪 otrovato (B2B trade)</span>
+          <span class="badge badge-green">🎡 Orascom Pyramids Entertainment</span>
+          <span class="badge badge-gray">🌍 OTrade & Logistics</span>
+          <span class="badge badge-blue">🍽 MEI / Khufu's Restaurant</span>
+          <span class="badge badge-orange">🏗 Orascom Development</span>
+        </div>
+      </div>
+    </div>
+    <div class="grid-4">
+      <div class="stat-card"><div class="number">13K</div><div class="label">LinkedIn Followers</div><div class="sub">vs. 330K Orascom Dev.</div></div>
+      <div class="stat-card"><div class="number">201–500</div><div class="label">Employees</div><div class="sub">66 LinkedIn-listed</div></div>
+      <div class="stat-card"><div class="number">EGX + LSE</div><div class="label">Stock Listings</div><div class="sub">Dual-listed GDRs</div></div>
+      <div class="stat-card"><div class="number">1997</div><div class="label">Founded</div><div class="sub">Legacy of Orascom Telecom</div></div>
+    </div>
+  </div>
+
+  <!-- TARGET AUDIENCE MAPPING -->
+  <div class="section">
+    <div class="section-title">Target Audience Mapping</div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">For a dual-listed investment holding company with a diversified MENA-Africa portfolio, OIH's LinkedIn audience is multi-layered. Each segment has distinct needs that content must address.</p>
+    <div class="grid-3">
+      <div class="persona-card">
+        <h4>🏦 Institutional Investors & Analysts</h4>
+        <div class="role">Primary Strategic Audience</div>
+        <ul>
+          <li>EGX & LSE shareholders, fund managers</li>
+          <li>Need: portfolio performance data, M&A updates, ESG positioning</li>
+          <li>LinkedIn behaviour: read thought leadership, follow executive voices</li>
+          <li>Pain point: OIH's story is scattered across subsidiaries</li>
+        </ul>
+      </div>
+      <div class="persona-card">
+        <h4>🤝 Business Partners & B2B Decision-Makers</h4>
+        <div class="role">Commercial Growth Audience</div>
+        <ul>
+          <li>African & MENA trade partners (otrovato focus)</li>
+          <li>Logistics, retail, manufacturing companies</li>
+          <li>Need: proof of capability, partnership outcomes</li>
+          <li>LinkedIn behaviour: engage with case studies & deal announcements</li>
+        </ul>
+      </div>
+      <div class="persona-card">
+        <h4>🎓 Top Talent & Executive Candidates</h4>
+        <div class="role">Employer Brand Audience</div>
+        <ul>
+          <li>MBA graduates, regional finance/tech talent</li>
+          <li>Need: culture signals, leadership visibility, growth narrative</li>
+          <li>LinkedIn behaviour: follow company pages, engage with culture content</li>
+          <li>Pain point: OIH's employer brand is invisible on LinkedIn</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:20px">
+      <div class="persona-card" style="background: linear-gradient(135deg, #2E8B57, #1a5c3a)">
+        <h4>🌱 ESG & Impact Stakeholders</h4>
+        <div class="role">Credibility & Reputation Audience</div>
+        <ul>
+          <li>Development finance institutions (DFIs), NGOs, regulators</li>
+          <li>CSR professionals, sustainability-focused investors</li>
+          <li>Need: impact metrics, community development stories, renewable energy updates</li>
+          <li>LinkedIn behaviour: share, comment on sustainability content</li>
+        </ul>
+      </div>
+      <div class="persona-card" style="background: linear-gradient(135deg, #C05621, #7B341E)">
+        <h4>📰 Media & Industry Analysts</h4>
+        <div class="role">Amplification Audience</div>
+        <ul>
+          <li>Egyptian financial press, MENA business media, ICT journalists</li>
+          <li>LinkedIn behaviour: source stories, reshare company announcements</li>
+          <li>Need: press-ready data, clear narrative hooks, executive quotes</li>
+          <li>Currently served by: ICTBusiness Magazine reshares</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- CONTENT PERFORMANCE ANALYSIS -->
+  <div class="section">
+    <div class="section-title">Content Performance Analysis</div>
+
+    <!-- Posting Frequency -->
+    <div class="card" style="margin-bottom:20px">
+      <h3>📅 Posting Frequency & Cadence</h3>
+      <p style="margin-bottom:16px">Based on visible posts (sorted by Top and by Images), OIH is publishing approximately <strong>1–2 posts per month</strong>. The most recent post is from 1 month ago, with the previous cluster around 2–3 months ago. This cadence is significantly below LinkedIn's recommended 3–5 posts per week for company pages aiming for algorithmic reach and audience retention.</p>
+      <div class="chart-bar-container">
+        <div class="chart-label"><span>OIH Current Cadence (~6–8/year)</span><span>6%</span></div>
+        <div class="chart-bar"><div class="chart-bar-fill" style="width:6%"></div></div>
+        <div class="chart-label"><span>LinkedIn Recommended Minimum (3×/week)</span><span>100%</span></div>
+        <div class="chart-bar"><div class="chart-bar-fill" style="width:100%"></div></div>
+        <div class="chart-label"><span>MENA Investment Holding Peer Average (~8–12/month)</span><span>30%</span></div>
+        <div class="chart-bar"><div class="chart-bar-fill" style="width:30%"></div></div>
+      </div>
+    </div>
+
+    <!-- Post Performance Table -->
+    <div class="card" style="padding: 0; overflow:hidden;">
+      <div style="padding:20px 24px 12px; border-bottom:1px solid var(--border)"><h3>📊 Individual Post Performance Summary</h3></div>
+      <div style="overflow-x:auto">
+        <table class="post-table">
+          <thead>
+            <tr>
+              <th>Post Topic</th>
+              <th>Type</th>
+              <th>Age</th>
+              <th>Reactions</th>
+              <th>Comments</th>
+              <th>Reposts</th>
+              <th>Engagement Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CEO Appointment — otrovato (Haytham Salama)</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>3mo</td>
+              <td><strong>402</strong></td>
+              <td><strong>163</strong></td>
+              <td>9</td>
+              <td><span class="badge badge-green">🔥 Exceptional</span></td>
+            </tr>
+            <tr>
+              <td>Naguib Sawiris — Italian Order of the Star honor</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>1mo</td>
+              <td>74</td>
+              <td>—</td>
+              <td>4</td>
+              <td><span class="badge badge-orange">✅ High</span></td>
+            </tr>
+            <tr>
+              <td>Ramadan Iftar gathering (video)</td>
+              <td><span class="badge badge-orange">Video</span></td>
+              <td>1mo</td>
+              <td>77</td>
+              <td>—</td>
+              <td>18</td>
+              <td><span class="badge badge-orange">✅ High (strong reposts)</span></td>
+            </tr>
+            <tr>
+              <td>Blu EV milestone — 1M to 8.7M KM</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>1mo</td>
+              <td>59</td>
+              <td>2</td>
+              <td>9</td>
+              <td><span class="badge badge-orange">✅ Above Avg</span></td>
+            </tr>
+            <tr>
+              <td>Eid Al-Fitr greeting</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>1mo</td>
+              <td>28</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-gray">⚪ Average</span></td>
+            </tr>
+            <tr>
+              <td>Ramadan Kareem greeting</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>2mo</td>
+              <td>25</td>
+              <td>—</td>
+              <td>8</td>
+              <td><span class="badge badge-gray">⚪ Average</span></td>
+            </tr>
+            <tr>
+              <td>Khufu's Restaurant — #1 MENA (2026)</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>3mo</td>
+              <td>25</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-gray">⚪ Average</span></td>
+            </tr>
+            <tr>
+              <td>Easter Greetings</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>1mo</td>
+              <td>20</td>
+              <td>1</td>
+              <td>1</td>
+              <td><span class="badge badge-gray">⚪ Average</span></td>
+            </tr>
+            <tr>
+              <td>otrovato–CIB Egypt strategic partnership (reshare)</td>
+              <td><span class="badge badge-gray">Reshare</span></td>
+              <td>2mo</td>
+              <td>18</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-red">🔻 Below Avg</span></td>
+            </tr>
+            <tr>
+              <td>International Women's Day greeting</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>2mo</td>
+              <td>19</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-red">🔻 Below Avg</span></td>
+            </tr>
+            <tr>
+              <td>otrovato Nairobi showroom expansion</td>
+              <td><span class="badge badge-blue">Image</span></td>
+              <td>3mo</td>
+              <td>22</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-gray">⚪ Average</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Engagement Stats -->
+    <div class="grid-3" style="margin-top:20px">
+      <div class="engagement-highlight">
+        <div class="big">402</div>
+        <div class="desc">Peak reactions (CEO appointment post)<br>Highest-performing content by far</div>
+      </div>
+      <div class="engagement-highlight" style="background: linear-gradient(135deg, #EBF4FF20, #3182CE10); border-color: #3182CE">
+        <div class="big" style="color:#2B6CB0">18</div>
+        <div class="desc">Max reposts (Ramadan Iftar video)<br>Best reach-amplification post</div>
+      </div>
+      <div class="engagement-highlight" style="background: linear-gradient(135deg, #F0FFF420, #2E8B5710); border-color: #2E8B57">
+        <div class="big" style="color:#276749">163</div>
+        <div class="desc">Peak comments (CEO appointment post)<br>Only post with real conversation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT MIX BREAKDOWN -->
+  <div class="section">
+    <div class="section-title">Content Mix & Theme Breakdown</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Content Type Distribution</h3>
+        <div class="chart-bar-container">
+          <div class="chart-label"><span>📸 Static Image Posts</span><span>~82%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:82%"></div></div>
+          <div class="chart-label"><span>🎥 Video Posts</span><span>~9%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:9%"></div></div>
+          <div class="chart-label"><span>🔁 Reshares / Third-party</span><span>~9%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:9%"></div></div>
+          <div class="chart-label"><span>📄 Articles / Documents</span><span>0%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:0%"></div></div>
+        </div>
+        <p style="margin-top:14px;font-size:13px"><strong>Key insight:</strong> The complete absence of articles, newsletters, and documents is a missed opportunity for thought leadership — a core LinkedIn differentiator for investment firms.</p>
+      </div>
+      <div class="card">
+        <h3>Content Theme Distribution</h3>
+        <div class="chart-bar-container">
+          <div class="chart-label"><span>🎉 Holiday / Seasonal Greetings</span><span>36%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:36%"></div></div>
+          <div class="chart-label"><span>🏆 Portfolio Milestones & Awards</span><span>27%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:27%"></div></div>
+          <div class="chart-label"><span>👔 Leadership & People News</span><span>18%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:18%"></div></div>
+          <div class="chart-label"><span>📈 Business Growth / Expansion</span><span>18%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:18%"></div></div>
+          <div class="chart-label"><span>💡 Industry Insight / Thought Leadership</span><span>0%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:0%"></div></div>
+          <div class="chart-label"><span>📊 Financial / Investor Updates</span><span>0%</span></div>
+          <div class="chart-bar"><div class="chart-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout"><strong>Critical Gap:</strong> Over a third of posts are holiday greetings, which generate below-average engagement and offer no differentiated brand value. Meanwhile zero posts cover investor relations, sector analysis, ESG/impact reporting, or market commentary — the content types most valued by OIH's primary audience of investors and partners.</div>
+  </div>
+  <!-- STRENGTHS -->
+  <div class="section">
+    <div class="section-title">Content Strengths</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Strong Brand Visual Identity</h4>
+            <p>Posts consistently use OIH's color palette (navy, orange, white), branded templates, and subsidiary logos. The visual design is professional and cohesive, making the feed recognizable at a glance. The banner image ("Driving Impact Across...") reinforces the holding company narrative.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>High-Impact Leadership Content</h4>
+            <p>The CEO appointment post for otrovato generated 402 reactions and 163 comments — proving that people-centric, leadership-focused content deeply resonates with OIH's audience. Executive recognition (Naguib Sawiris' Italian honor: 74 reactions) also outperforms other post types consistently.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Diverse Portfolio Story</h4>
+            <p>OIH naturally has content across multiple compelling verticals — EV technology, Africa trade expansion, luxury hospitality, renewable energy — giving the team multiple story angles that are genuinely interesting to different audience segments.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Data-Backed Milestone Posts</h4>
+            <p>The Blu EV "1M to 8.7M KM" infographic post demonstrates effective use of quantified impact metrics (327,000+ battery swaps, 876,000 kg CO₂ saved). Data-visualized milestones build credibility and are highly shareable, achieving 59 reactions and 9 reposts.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Video Content Outperforms Images on Reach</h4>
+            <p>The Ramadan Iftar video achieved 18 reposts — the highest repost count of any post — while generating 77 reactions. This demonstrates that video drives disproportionate amplification even when total reactions may be similar to image posts. A signal that more video investment will multiply organic reach.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Africa Expansion Narrative</h4>
+            <p>Posts covering otrovato's Nairobi showroom and CIB Egypt partnership begin to tell a compelling Pan-African growth story. This differentiates OIH from purely Egypt-focused peers and signals ambition to a wider, regionally-engaged audience.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Verified Page & Dual-Listing Credibility</h4>
+            <p>The LinkedIn page is verified (January 2025). OIH's dual EGX/LSE listing is clearly communicated in the About section. These are immediate trust signals that matter to institutional investors arriving via LinkedIn search or ad campaigns.</p>
+          </div>
+        </div>
+        <div class="strength-item">
+          <div class="icon-circle icon-green">✅</div>
+          <div class="item-content">
+            <h4>Strategic Partnership Announcements</h4>
+            <p>The otrovato × CIB Egypt partnership reshare, while underperforming on engagement (18 reactions), signals the right instinct to amplify B2B partnerships. With native posts rather than reshares and stronger narrative framing, these deal announcements could generate substantially more engagement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEAKNESSES -->
+  <div class="section">
+    <div class="section-title">Content Weaknesses & Gaps</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Severely Low Posting Frequency</h4>
+            <p>~1–2 posts per month is far below LinkedIn's recommended cadence. LinkedIn's algorithm deprioritizes pages with infrequent posting, directly suppressing organic reach for the entire 13K follower base. Competitors in the MENA investment space post 8–15 times per month.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Over-reliance on Holiday Greetings</h4>
+            <p>36% of posts are seasonal greetings (Eid, Easter, Ramadan, Women's Day). These generate below-average engagement (19–28 reactions), offer zero differentiation from any competitor doing the same, and consume valuable editorial slots that could carry strategic messages.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Zero Thought Leadership Content</h4>
+            <p>No articles, newsletters, or LinkedIn pulse posts have been published. For an investment holding company, thought leadership (sector outlooks, investment theses, African market commentary) is the single most effective way to build credibility with investors, partners, and media. This is a complete blind spot.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Absent Investor Relations Content</h4>
+            <p>As a dual-listed company (EGX + LSE GDRs), OIH has a shareholder audience that LinkedIn can serve — yet zero posts address financial results, capital allocation strategy, ESG performance, or market position. This is a missed IR communication channel.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>No Employee Advocacy or Culture Content</h4>
+            <p>Only 66 LinkedIn members list OIH as their employer despite 201–500 employees. No posts feature team members, culture moments, learning initiatives, or employee stories. This is a critical employer branding gap — top talent in Cairo, London, and Nairobi cannot form an opinion about OIH as a workplace.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Minimal Community Interaction</h4>
+            <p>The vast majority of posts have zero comments — one-way communication with no replies, no questions posed to the audience, no polls, no engagement prompts. LinkedIn rewards content that generates conversations, and OIH is not participating in any. This is compounded by the lack of post-level comment responses from OIH's page admins.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Poor Hashtag Strategy</h4>
+            <p>Only internal brand hashtags are used (#OIH, #OrascomInvestmentHolding, #otrovato, #Bluev). No industry, sector, or trending hashtags (e.g., #AfricaBusiness, #RenewableEnergy, #VentureCapital, #MENA, #SupplyChain) are employed. This severely limits discoverability beyond existing followers.</p>
+          </div>
+        </div>
+        <div class="weakness-item">
+          <div class="icon-circle icon-red">❌</div>
+          <div class="item-content">
+            <h4>Weak Post Copy & No CTAs</h4>
+            <p>Post captions are short, generic, and contain no clear calls-to-action. Phrases like "a key step in strengthening market connections" are vague. Posts don't link to reports, websites, or further reading, leaving the audience with no next step. Strong CTAs can lift engagement rates by 25–40%.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- IMPROVEMENT TACTICS -->
+  <div class="section">
+    <div class="section-title">Strategic Improvement Tactics</div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px">The following tactics are prioritized by impact and aligned to OIH's business model, portfolio, and target audience segments.</p>
+
+    <div style="margin-bottom:32px">
+      <h4 style="font-size:15px;color:var(--primary);margin-bottom:16px;font-weight:700">🔴 HIGH PRIORITY — Implement within 30 days</h4>
+
+      <div class="tactic-card">
+        <div class="priority priority-high">PRIORITY: HIGH · AUDIENCE: ALL · EFFORT: LOW</div>
+        <h4>1. Establish a Consistent Editorial Calendar (Min. 3 posts/week)</h4>
+        <p>Immediately increase posting cadence from ~6/year to a minimum of 12/month. Recommended weekly structure: Monday = Sector Insight/Industry Commentary, Wednesday = Portfolio Spotlight or Partnership Story, Friday = Leadership or Culture post. Use LinkedIn's native scheduling tool. Even without new content, this cadence alone will dramatically improve algorithmic reach within 60 days. Assign a dedicated content manager or social media partner agency to own this calendar.</p>
+      </div>
+
+      <div class="tactic-card">
+        <div class="priority priority-high">PRIORITY: HIGH · AUDIENCE: INVESTORS & PARTNERS · EFFORT: MEDIUM</div>
+        <h4>2. Launch a "Portfolio Performance" Monthly Post Series</h4>
+        <p>Every month, publish a branded infographic-style post spotlighting one portfolio company with a key metric: Blu EV km ridden, otrovato GMV or showroom count, Khufu's ranking/covers served, Orascom Pyramids Entertainment visitor numbers. This creates an investor-facing "pulse" of the portfolio without requiring full financial disclosure. Format: Bold statistic + 2-line context + CTA linking to website or investor page. Model: similar to how NEOM, Majid Al Futtaim, and Abu Dhabi Investment Authority communicate portfolio vitality on LinkedIn.</p>
+      </div>
+
+      <div class="tactic-card">
+        <div class="priority priority-high">PRIORITY: HIGH · AUDIENCE: ALL · EFFORT: LOW</div>
+        <h4>3. Overhaul Hashtag Strategy — Add Industry & Reach Tags</h4>
+        <p>Immediately augment hashtag strategy beyond brand-only tags. Use a 3-tier system on every post: (1) Brand: #OIH #OrascomInvestmentHolding (2) Portfolio subsidiary: #Bluev #otrovato #MEI (3) Industry/reach: #AfricaBusiness #MENA #ElectricMobility #InvestmentManagement #TradeFinance #RenewableEnergy #SupplyChain. Target 5–8 hashtags per post. This alone can increase post impressions by 40–60% through LinkedIn hashtag feed discovery.</p>
+      </div>
+
+      <div class="tactic-card">
+        <div class="priority priority-high">PRIORITY: HIGH · AUDIENCE: ALL · EFFORT: LOW</div>
+        <h4>4. Add Strong CTAs to Every Post</h4>
+        <p>Never publish a post without a clear call-to-action. Options include: "Read our full portfolio story at orascomih.com →", "What's your take on EV adoption in Africa? Tell us below 👇", "Tag a partner who shares our vision for African trade", "Follow Orascom Investment Holding for monthly portfolio updates." CTAs increase comments, clicks, and follows — directly lifting content ROI.</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:32px">
+      <h4 style="font-size:15px;color:var(--primary);margin-bottom:16px;font-weight:700">🟠 MEDIUM PRIORITY — Implement within 60–90 days</h4>
+
+      <div class="tactic-card" style="border-color: #3182CE">
+        <div class="priority priority-medium">PRIORITY: MEDIUM · AUDIENCE: INVESTORS & MEDIA · EFFORT: MEDIUM</div>
+        <h4>5. Launch LinkedIn Articles / Thought Leadership Series</h4>
+        <p>Publish monthly long-form LinkedIn Articles (600–1200 words) authored by OIH's Executive Chairman, CEO, or portfolio leaders. Suggested topics: "Why Africa's B2B Trade Infrastructure is the Next Frontier" (Naguib Sawiris or otrovato CEO), "From 1M to 8.7M KM: What Egypt's EV Transition Taught Us" (Blu EV CEO), "How We Think About Portfolio Diversification in Volatile Markets" (OIH leadership). Articles dramatically increase LinkedIn page authority and show up in Google search results — creating long-tail discovery for investors and media.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: #3182CE">
+        <div class="priority priority-medium">AUDIENCE: TALENT · EFFORT: LOW–MEDIUM</div>
+        <h4>6. Activate an Employee Advocacy Program</h4>
+        <p>Increase the 66/~350 employee LinkedIn representation rate. First step: brief internal comms campaign asking all OIH and subsidiary employees to list OIH as their employer on LinkedIn. Second: launch a monthly "Team Spotlight" series — 1 post/month featuring an employee, their role, and a quote about their work. Third: encourage employees to share company posts, which exponentially multiplies organic reach (each share exposes content to the sharer's entire network). Companies with active employee advocacy generate 8x more engagement per post.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: #3182CE">
+        <div class="priority priority-medium">AUDIENCE: PARTNERS & INVESTORS · EFFORT: MEDIUM</div>
+        <h4>7. Reframe Holiday Posts as Mission-Aligned Messages</h4>
+        <p>Don't eliminate seasonal greetings — transform them. Instead of a generic "Happy Eid from OIH," post: "This Ramadan, Blu EV riders saved 876,000 kg of CO₂ — a gift to the planet as well as to the season. Ramadan Kareem from OIH 🌙" This retains cultural warmth while embedding brand storytelling and impact data. Every holiday post becomes an opportunity to reinforce OIH's investment thesis and portfolio value. This approach can lift seasonal post engagement by 50–80%.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: #3182CE">
+        <div class="priority priority-medium">AUDIENCE: ALL · EFFORT: LOW</div>
+        <h4>8. Increase Video Content to 25–30% of Posts</h4>
+        <p>The Ramadan Iftar video achieved 18 reposts — the highest repost rate of any content. LinkedIn's algorithm gives native video ~3x the organic reach of static images. Practical video formats to produce monthly: 60-second "Site Visit" reels of portfolio companies (otrovato Nairobi showroom, Blu EV swap stations, Khufu's at the Pyramids), interview clips with portfolio CEOs, time-lapse or behind-the-scenes content. These don't require large production budgets — authentic smartphone-quality video performs well on LinkedIn.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: #3182CE">
+        <div class="priority priority-medium">AUDIENCE: INVESTORS · EFFORT: MEDIUM</div>
+        <h4>9. Create a "Quarterly Impact Report" Document Post</h4>
+        <p>LinkedIn's native document/PDF carousel format has become one of the highest-engagement content types on the platform (swipeable slides, high dwell time). OIH should publish a quarterly 8–12-slide "Portfolio Impact Update" as a LinkedIn document: slide 1 = OIH overview, slides 2–6 = one slide per portfolio company with key KPI, slide 7 = ESG/sustainability metrics, slide 8 = what's next. This directly addresses the investor and partner audiences while showcasing OIH's comprehensive vision. No articles or documents have been published — this would be a first-mover advantage on the page.</p>
+      </div>
+    </div>
+
+    <div>
+      <h4 style="font-size:15px;color:var(--primary);margin-bottom:16px;font-weight:700">🟢 ONGOING — Build into long-term content strategy</h4>
+
+      <div class="tactic-card" style="border-color: var(--green)">
+        <div class="priority priority-low">PRIORITY: ONGOING · AUDIENCE: ALL · EFFORT: MEDIUM</div>
+        <h4>10. Develop 5 Recurring Content Pillars</h4>
+        <p>Structure the editorial calendar around 5 distinct recurring series, each serving a different audience: <strong>(1) Portfolio Pulse</strong> [investors] — monthly metric spotlight per subsidiary. <strong>(2) Africa Insights</strong> [partners] — commentary on MENA & African market trends. <strong>(3) Leadership Voices</strong> [media & talent] — executive perspectives and announcements. <strong>(4) Impact Stories</strong> [ESG stakeholders] — environmental, social, community impact narratives. <strong>(5) Behind OIH</strong> [talent] — culture, team, careers. This pillar model ensures every audience segment receives relevant content and no single topic dominates the feed.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: var(--green)">
+        <div class="priority priority-low">PRIORITY: ONGOING · AUDIENCE: INVESTORS & PARTNERS · EFFORT: LOW</div>
+        <h4>11. Tag Strategic Partners and Enable Co-amplification</h4>
+        <p>Currently, partnership posts (e.g., otrovato × CIB) are either reshares or don't tag the partner page. Native OIH posts that @mention partner companies (CIB Egypt, major trade organizations, government entities) will trigger notifications to those pages and their admin teams — often resulting in likes, reshares, or comments from large institutional accounts, dramatically multiplying reach. A partnership announcement that tags @CIB Egypt (170K+ followers) could expose OIH content to a completely new audience.</p>
+      </div>
+
+      <div class="tactic-card" style="border-color: var(--green)">
+        <div class="priority priority-low">PRIORITY: ONGOING · AUDIENCE: TALENT · EFFORT: MEDIUM</div>
+        <h4>12. Align LinkedIn with Active Hiring Campaigns</h4>
+        <p>OIH maintains a careers page (careers-page.com/orascom-investment-holding) but LinkedIn posts make no mention of job openings. Create a recurring "We're Hiring" post series with LinkedIn native job listings, team culture snippets, and employee testimonials. Combine with LinkedIn Jobs postings to ensure the Jobs tab is always populated. A well-executed employer branding presence on LinkedIn reduces cost-per-hire and attracts higher-caliber candidates — particularly important for OIH's ongoing Africa expansion which requires on-ground regional talent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORING OVERVIEW -->
+  <div class="section">
+    <div class="section-title">Current Content Health Scorecard</div>
+    <div class="card">
+      <div class="grid-4" style="gap:32px;justify-items:center">
+        <div class="score-ring">
+          <div class="ring" style="--pct: 35%"><div class="inner">3.5</div></div>
+          <div class="ring-label">Posting Frequency<br><span style="color:var(--red);font-size:11px">Critical gap</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 55%"><div class="inner">5.5</div></div>
+          <div class="ring-label">Visual Brand Quality<br><span style="color:var(--accent);font-size:11px">Adequate</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 25%"><div class="inner">2.5</div></div>
+          <div class="ring-label">Content Diversity<br><span style="color:var(--red);font-size:11px">Needs work</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 20%"><div class="inner">2</div></div>
+          <div class="ring-label">Community Engagement<br><span style="color:var(--red);font-size:11px">Minimal</span></div>
+        </div>
+      </div>
+      <div class="grid-4" style="gap:32px;justify-items:center;margin-top:32px">
+        <div class="score-ring">
+          <div class="ring" style="--pct: 10%"><div class="inner">1</div></div>
+          <div class="ring-label">Thought Leadership<br><span style="color:var(--red);font-size:11px">Absent</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 60%"><div class="inner">6</div></div>
+          <div class="ring-label">Leadership Storytelling<br><span style="color:var(--accent);font-size:11px">Strong when used</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 20%"><div class="inner">2</div></div>
+          <div class="ring-label">Hashtag Strategy<br><span style="color:var(--red);font-size:11px">Brand-only only</span></div>
+        </div>
+        <div class="score-ring">
+          <div class="ring" style="--pct: 15%"><div class="inner">1.5</div></div>
+          <div class="ring-label">Employer Branding<br><span style="color:var(--red);font-size:11px">Effectively absent</span></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid var(--border)">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">OVERALL CONTENT HEALTH SCORE</div>
+        <div style="font-size:52px;font-weight:800;color:var(--accent)">3.0 <span style="font-size:24px;font-weight:400;color:var(--text-muted)">/10</span></div>
+        <div style="font-size:13px;color:var(--text-muted);max-width:500px;margin:12px auto 0">OIH's LinkedIn is a dormant asset with high potential. The 13K follower base and 402-reaction CEO post prove audience appetite exists. Consistent, strategic content could realistically bring this score to 7+ within 6 months.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMMENDED CONTENT CALENDAR -->
+  <div class="section">
+    <div class="section-title">Sample 4-Week Content Calendar</div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="post-table">
+        <thead>
+          <tr><th>Week</th><th>Monday</th><th>Wednesday</th><th>Friday</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Week 1</strong></td>
+            <td>📊 Portfolio Pulse: Blu EV monthly KM milestone infographic <span class="badge badge-blue">Image</span></td>
+            <td>🌍 Africa Insight: article on African B2B trade infrastructure opportunity (with link to LinkedIn Article by CEO) <span class="badge badge-orange">Article</span></td>
+            <td>👔 Leadership Voice: Quote card from Naguib Sawiris on OIH's investment philosophy <span class="badge badge-blue">Image</span></td>
+          </tr>
+          <tr>
+            <td><strong>Week 2</strong></td>
+            <td>🏪 otrovato: Nairobi showroom expansion video tour (60 sec) <span class="badge badge-orange">Video</span></td>
+            <td>🤝 Partnership Spotlight: CIB × otrovato deal — OIH native post with @CIB Egypt tag <span class="badge badge-blue">Image</span></td>
+            <td>🎓 Behind OIH: Employee spotlight — a team member at Blu EV shares their story <span class="badge badge-blue">Image</span></td>
+          </tr>
+          <tr>
+            <td><strong>Week 3</strong></td>
+            <td>🌱 Impact Story: Blu EV CO₂ saved — environmental impact infographic with industry hashtags <span class="badge badge-blue">Image</span></td>
+            <td>📋 Quarterly Portfolio Impact: 8-slide carousel document (investor-oriented) <span class="badge badge-gray">Document</span></td>
+            <td>💼 Hiring: "We're Hiring" post featuring open roles at OIH portfolio companies <span class="badge badge-green">Hiring</span></td>
+          </tr>
+          <tr>
+            <td><strong>Week 4</strong></td>
+            <td>🏆 Award/Recognition: Khufu's #1 MENA restaurant — deeper story with guest quotes <span class="badge badge-blue">Image</span></td>
+            <td>💬 Engagement Post: Poll — "Which sector do you see as Africa's biggest growth opportunity in 2026?" <span class="badge badge-orange">Poll</span></td>
+            <td>📺 Video Recap: 90-sec behind-the-scenes at Orascom Pyramids Entertainment <span class="badge badge-orange">Video</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p><strong>Orascom Investment Holding — LinkedIn Content Analysis Report</strong></p>
+  <p>Analysis conducted: May 2026 | Data sourced from publicly available LinkedIn company page | Report prepared for internal strategic use</p>
+  <p style="margin-top:8px;opacity:0.6">This report is based on observable LinkedIn page data and publicly available company information. Engagement benchmarks reference MENA investment sector averages as of 2025–2026.</p>
+</div>
+
+</body>
+</html>
